@@ -9,7 +9,7 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     ## Important: for production environments, local logging with "info" or "debug" is not recommended. Use HSL ##
     ## remote logging instead.                                                                                  ##
     ## -----------------------------                                                                            ##
-    ## Date: 20220906                                                                                           ##
+    ## Date: 20220907                                                                                           ##
     ## Script-Version: 04                                                                                       ##
     ## iApp Version: 3.0.3                                                                                      ##
     ## Author: Stephan Schulz                                                                                   ##
