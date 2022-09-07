@@ -4,11 +4,40 @@ This script is used to filter /var/log/ltm on a BIG-IP for relevant log messages
 
 <br /> 
 
-Important
+![example](/images/picture-02.png)
 
+<br /> 
 
+## Important!
+Local logging with severity "debug" is not recommended for production environments! Please use HSL remote logging instead.
+
+<br /> 
+
+---
+
+## example output
+
+<br /> 
 
 ![example](/images/picture-01.png)
 
+<br /> 
+
 ---
+
+## installation
+
+* copy and place this script on your BIG-IP and make it executable.
+
+<br /> 
+
+`chmod +x logview.sh`
+
+<br /> 
+
+* run the script with:
+
+<br /> 
+
+`./logview.sh`
 
