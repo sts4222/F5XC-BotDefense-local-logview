@@ -27,7 +27,7 @@ Local logging with severity "debug" is not recommended for production environmen
 
 ## installation
 
-* copy and place this script on your BIG-IP and make it executable.
+* copy and place this script (use the version based on your iApp version) on your BIG-IP and make it executable.
 
 <br /> 
 
