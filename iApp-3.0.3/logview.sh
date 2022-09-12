@@ -9,8 +9,8 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     ## Important: for production environments, local logging with "info" or "debug" is not recommended. Use HSL ##
     ## remote logging instead.                                                                                  ##
     ## -----------------------------                                                                            ##
-    ## Date: 20220907                                                                                           ##
-    ## Script-Version: 04                                                                                       ##
+    ## Date: 20220912                                                                                           ##
+    ## Script-Version: 06                                                                                       ##
     ## iApp Version: 3.0.3                                                                                      ##
     ## Author: Stephan Schulz                                                                                   ##
     ##############################################################################################################
@@ -20,22 +20,30 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     ###################################
 
     #### rule #1.1 - JS served (matcher), first time
-    if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && !/api_ms/)
-        print "\033[33m" "info " "\033[37m" "----- #1 - JS-matcher (BIG-IP) ---------- " $2 " | " $4 " | " $18" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " $11 ;
-    
+    if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && !/api_ms/ )
+        print "\033[33m" "info " "\033[37m" "----- #1 - JS-matcher (BIG-IP) ---------- " $2 " | " $4 " | " $18" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " $10 ;
+        
+    #### rule #1.1.1 - JS served (matcher), first time - no TLS
+    if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && !/api_ms/ && !/tls_ver/ )
+        print "\033[33m" "info " "\033[37m" "----- #1 - JS-matcher (BIG-IP) ---------- " $2 " | " $4 " | " $16" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $9 " | " "\033[32m" $11 "\033[37m" " | " $11 ;
+
     #### rule #1.2 - JS served (matcher), if malicious activity is detected
-    if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && /atmn_type/)
+    if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && /atmn_type/ )
         print "\033[33m" "info " "\033[37m" "----- #1 - JS-matcher (BIG-IP) ---------- " $2 " | " $4 " | " $21" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " $11 ;
     
     #### rule #1.3 - JS served (matcher), all following
-    else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && /api_ms/)
+    else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply matcher-JS/ && /api_ms/ )
         print "\033[33m" "info " "\033[37m" "----- #1 - JS-matcher (BIG-IP) ---------- " $2 " | " $4 " | " $20" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " $11" | " $16" | " $22 ;
 
     #### rule #2.1 - JS served (cache), first time
     else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /cache/ && !/mitigation/ )
         print "\033[33m" "info " "\033[37m" "----- #2 - JS-cache (F5 XC) ------------- " $2 " | " $4 " | " $18" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $12 "\033[37m" " | " $15 " | " $20 ;
 
-    #### rule #2.1 - JS served (cache), all following
+    #### rule #2.1.1 - JS served (cache), first time, no TLS
+    else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /cache/ && !/mitigation/ && !/tls_ver/ )
+        print "\033[33m" "info " "\033[37m" "----- #2 - JS-cache (F5 XC) ------------- " $2 " | " $4 " | " $16" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $9 " | " "\033[32m" $10 "\033[37m" " | " $13 " | " $18 ;
+
+    #### rule #2.2 - JS served (cache), all following
     else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /cache/ )
         print "\033[33m" "info " "\033[37m" "----- #2 - JS-cache (F5 XC) ------------- " $2 " | " $4 " | " $19" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $12 "\033[37m" " | " $15 " | " $21 ;
 
@@ -43,7 +51,11 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /async/ && !/mitigation/ )
         print "\033[33m" "info " "\033[37m" "----- #3 - JS-async (F5 XC) ------------- " $2 " | " $4 " | " $18" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $12 "\033[37m" " | " $15 " | " $20 ;
 
-    #### rule #3-2 - JS served (async), all following
+    #### rule #3.1.1 - JS served (async), first time, no TLS
+    else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /async/ && !/mitigation/ && !/tls_ver/ )
+        print "\033[33m" "info " "\033[37m" "----- #3 - JS-async (F5 XC) ------------- " $2 " | " $4 " | " $16" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $9 " | " "\033[32m" $10 "\033[37m" " | " $13 " | " $18 ;
+
+    #### rule #3.2 - JS served (async), all following
     else if ( /\"severity\":\"info\"/  && /HTTP_REQUEST/ && /reply shape-JS/ && /async/ )
         print "\033[33m" "info " "\033[37m" "----- #3 - JS-async (F5 XC) ------------- " $2 " | " $4 " | " $19" | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $12 "\033[37m" " | " $15 " | " $21 ;
    
@@ -55,8 +67,12 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     else if ( /\"severity\":\"info\"/ && /HTTP_REQUEST/ && /reply block-message/ )
         print "\033[33m" "info " "\033[37m" "----- #5 - " "\033[31m" "malicious activity detected" "\033[37m" " -- " $2 " | " $4 " | " $21 " | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " "\033[31m" $8 "\033[37m" " | " $11 " | " "\033[32m" $12 "\033[37m" " | " "\033[36m" $14 "\033[37m" " | " $19 " | " $17 " | " $23 ;
     
-    #### rule #6 - human detected - not mitigated
-    else if ( /\"severity\":\"info\"/  && /HTTP_RESPONSE/ && /POST/ && /request sent, origin status/ && !/origin status 4/ && !/API call failed/ )
+    #### rule #6 - human detected - not mitigated, no mitigation mentioned
+    else if ( /\"severity\":\"info\"/  && /HTTP_RESPONSE/ && /POST/ && /request sent, origin status 3/ && !/origin status 4/ && !/origin status 5/ && !/API call failed/ && !/api_ms/ )
+        print "\033[33m" "info " "\033[37m" "----- #6 - " "\033[32m" "human detected" "\033[37m" " --------------- " $2 " | " $4 " | " $18 " | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " "\033[36m" $11 "\033[37m" " | " $18 " | " $16 " | " $20 ; 
+
+    #### rule #6.1 - human detected - not mitigated
+    else if ( /\"severity\":\"info\"/  && /HTTP_RESPONSE/ && /POST/ && /request sent, origin status 3/ && !/origin status 4/ && !/origin status 5/ && !/API call failed/ )
         print "\033[33m" "info " "\033[37m" "----- #6 - " "\033[32m" "human detected" "\033[37m" " --------------- " $2 " | " $4 " | " $20 " | " "\033[36m" $6 "\033[37m" " | " "\033[33m" $7 "\033[37m" " | " $10 " | " "\033[32m" $13 "\033[37m" " | " "\033[36m" $11 "\033[37m" " | " $18 " | " $16 " | " $22 ; 
     
     #### rule #7-1 - API Call failed - not mitigated
@@ -112,7 +128,11 @@ unbuffer tail -f /var/log/ltm | awk -F ",\"" '{
     else if ( /\"severity\":\"debug\"/ && /HTTP_REQUEST/ && /Shape API status=200, Inference=human/ )
         print "\033[31m" "debug " "\033[37m" "---- #6 - " "\033[32m" "Human detected" "\033[37m" " --------------- "  $2 " | " $4 " | " $3 " | " "\033[36m" $5 "\033[37m" ;
 
-    #### rule #7 - API status 555
+    #### rule #7 - Malicious Activity detected
+    else if ( /\"severity\":\"debug\"/ && /HTTP_REQUEST/ && /Shape API status=200, Inference=malicious/ )
+        print "\033[31m" "debug " "\033[37m" "---- #7 - " "\033[31m" "Malicious Activity detected" "\033[37m" " -- "  $2 " | " $4 " | " $3 " | " "\033[36m" $5 "\033[37m" ;
+
+    #### rule #8 - API status 555
     else if ( /\"severity\":\"debug\"/ && /HTTP_REQUEST/ && /Shape API status=555,/ )
-        print "\033[31m" "debug " "\033[37m" "---- #7 - " "\033[31m" "API not reachable" "\033[37m" " ------------ "  $2 " | " $4 " | " $3 " | " "\033[36m" $5 "\033[37m"
+        print "\033[31m" "debug " "\033[37m" "---- #8 - " "\033[31m" "API not reachable" "\033[37m" " ------------ "  $2 " | " $4 " | " $3 " | " "\033[36m" $5 "\033[37m"
 }'
