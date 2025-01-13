@@ -44,9 +44,9 @@ def load_files(filename):
         with open(filename, "r") as filter_file:
             files = []
             for line in filter_file:locals
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    files.append(line)
+            line = line.strip()
+            if line and not line.startswith("#"):
+                files.append(line)
             return files
     except IOError:
         print(" --- Error while opening filter file: {}".format(filename))
