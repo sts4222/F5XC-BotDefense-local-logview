@@ -1,0 +1,9 @@
+reply block-message
+serve interstitial-JS
+reply matcher-JS
+reply F5 Client JS
+reply client JS fetch
+mitigation_decision
+INFO mitigation
+ISTL protected endpoint=
+injecting matcher&single JS

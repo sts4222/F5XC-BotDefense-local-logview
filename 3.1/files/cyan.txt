@@ -1,0 +1,16 @@
+Setting mitigation
+No mitigation found for endpoint
+start API call to
+Removing telemetry from
+request body not a web form so not sending it to API server
+allowed-ip
+allowed-header
+return ISTL challenge
+HTTP method:
+XFF rewrite to
+Matcher JS requested, method
+send Client JS request to API server
+phoenix mitigation
+HTTP_RESPONSE from origin
+connect to F5 XC API server via
+API server=
