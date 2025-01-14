@@ -9,7 +9,7 @@ Script can run in two modes, "normal" and "full". If no argument is set, default
 
 ## Installation
 
-- copy files and folder or clone repo to your BIG-IP.
+- copy script and files folder or clone repo to your BIG-IP.
 - make the script executable \
 
     `chmod +x logviewer.py`
